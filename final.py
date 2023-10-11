@@ -312,7 +312,7 @@ class Ui_MainWindow(object):
         self.alarm.setText(_translate("MainWindow", "ALARM TESTING"))
         self.groupBox.setTitle(_translate("MainWindow", "LOG DATA"))
         self.pushbutton_clear.setText(_translate("MainWindow", "CLEAR LOGS"))
-        self.label.setText(_translate("MainWindow", "SPIN FREE ATS"))
+        self.label.setText(_translate("MainWindow", "SPIN FREE ATS V1.0"))
         self.groupBox_2.setTitle(_translate("MainWindow", "STATUS"))
         self.final_status.setText(_translate("MainWindow", ""))
 
@@ -548,6 +548,7 @@ class Ui_MainWindow(object):
                 self.print_console("Voltage value is out of range", "RED")
                 temp = False
             result.append(temp)
+
 
             # self.pfc.pfc_set([PFC_control_done.PFC1, PFC_control_done.PFC9])
             time.sleep(1)

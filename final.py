@@ -23,6 +23,11 @@ import time
 import PFC_control_done
 import DMM_READ
 from screeninfo import get_monitors
+import winsound
+import time
+import threading
+import keyboard
+
 
 global width, height
 
@@ -30,7 +35,6 @@ for m in get_monitors():
     if m.is_primary:
         width = m.width
         height = m.height
-
 
 
 class Ui_MainWindow(object):
@@ -284,6 +288,42 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
+        '''INDICATION'''
+        self.emergency_status = QtWidgets.QFrame(MainWindow)
+        self.emergency_status.setGeometry(QtCore.QRect(100, 750, 161, 161))
+        self.emergency_status.setStyleSheet("QFrame{\n"
+                                     "    border-color: rgb(0, 255, 0);\n"
+                                     "    border-radius:80px;\n"
+                                     "    background-color: rgb(188, 0, 0);border: 2px solid black\n"     #RGB(255,0,0);
+                                     "}")
+        self.emergency_status.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.emergency_status.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.emergency_status.setObjectName("emergency")
+        self.setup_status_2 = QtWidgets.QFrame(MainWindow)
+        self.setup_status_2.setGeometry(QtCore.QRect(320, 750, 161, 161))
+        self.setup_status_2.setStyleSheet("QFrame{\n"
+                                          "    border-radius:80px;\n"
+                                          "    border: 2px solid black;background-color: rgb(0, 130, 0);\n"  #rgb(0, 209, 0)
+                                          "}")
+        self.setup_status_2.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.setup_status_2.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.setup_status_2.setObjectName("setup_status_2")
+        self.emergency = QtWidgets.QLabel(MainWindow)
+        self.emergency.setGeometry(QtCore.QRect(100, 950, 151, 31))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        self.emergency.setFont(font)
+        self.emergency.setAlignment(QtCore.Qt.AlignCenter)
+        self.emergency.setObjectName("emergency")
+        self.setup = QtWidgets.QLabel(MainWindow)
+        self.setup.setGeometry(QtCore.QRect(320, 950, 151, 31))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        self.setup.setFont(font)
+        self.setup.setAlignment(QtCore.Qt.AlignCenter)
+        self.setup.setObjectName("setup")
+        '''INDICATION'''
+
         self.prompt = Prompt()
         self.channel = 0
         self.card_id = 0x610
@@ -315,6 +355,8 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "SPIN FREE ATS V1.0"))
         self.groupBox_2.setTitle(_translate("MainWindow", "STATUS"))
         self.final_status.setText(_translate("MainWindow", ""))
+        self.emergency.setText(_translate("MainWindow", "EMERGENCY"))
+        self.setup.setText(_translate("MainWindow", "SETUP STATUS"))
 
     def print_console(self, text="", color="BLUE"):
         if color == "RED":
@@ -372,8 +414,12 @@ class Ui_MainWindow(object):
             self.print_console(f'DUT PART NUMBER : {self.serial_number}')
             self.print_console(f'ASSOCIATE NAME : {self.associate_name}')
             self.lineEdit_STARTTIME.setText(str(self.get_date_time(time=1, date=1)))
+            self.setup_status_2.setStyleSheet("QFrame{\n"
+                                          "    border-radius:80px;\n"
+                                          "    border: 2px solid black;background-color: rgb(0, 255, 0);\n"  #rgb(0, 209, 0)
+                                          "}")
             while testing_flag:
-                for i in range(4):
+                for i in range(2, 4):
                     final_output = []
 
                     function_status = self.run_test(i)
@@ -419,6 +465,14 @@ class Ui_MainWindow(object):
             self.prompt.Message("ERROR!", "Kindly complete Test Details")
 
         self.pushButton_start.setDisabled(False)
+        self.setup_status_2.setStyleSheet("QFrame{\n"
+                                          "    border-radius:80px;\n"
+                                          "    border: 2px solid black;background-color: rgb(0, 130, 0);\n"  # rgb(0, 209, 0)
+                                          "}")
+        self.emergency_status.setStyleSheet("QFrame{\n"
+                                          "    border-radius:80px;\n"
+                                          "    border: 2px solid black;background-color: rgb(150, 0, 0);\n"  # rgb(0, 209, 0)
+                                          "}")
 
     def run_test(self, test_number: object) -> object:
         if test_number == 0:
@@ -436,20 +490,19 @@ class Ui_MainWindow(object):
                 self.input.setStyleSheet("background-color:rgb(235,50,50)")
             return health_check_variable
         elif test_number == 2:
-            health_check_variable = self.outputFunction()
-            if health_check_variable:
-                self.output.setStyleSheet("background-color:rgb(17,255,0)")
-            else:
-                self.output.setStyleSheet("background-color:rgb(235,50,50)")
-            return health_check_variable
-        elif test_number == 3:
             health_check_variable = self.alarmTesting()
             if health_check_variable:
                 self.alarm.setStyleSheet("background-color:rgb(17,255,0)")
             else:
                 self.alarm.setStyleSheet("background-color:rgb(235,50,50)")
             return health_check_variable
-
+        elif test_number == 3:
+            health_check_variable = self.outputFunction()
+            if health_check_variable:
+                self.output.setStyleSheet("background-color:rgb(17,255,0)")
+            else:
+                self.output.setStyleSheet("background-color:rgb(235,50,50)")
+            return health_check_variable
         else:
             return False
 
@@ -599,13 +652,23 @@ class Ui_MainWindow(object):
         result = []
         self.output.setStyleSheet("background-color:rgb(0,128,255)")
         if self.is_topcard:
-            user_response = self.prompt.User_prompt(
-                "Are all connectors connected to Testing unit at respective connections?")
-            if user_response:
-                temp = True
-            else:
-                temp = False
-            result.append(temp)
+            try:
+                thread_1 = threading.Thread(target=self.buzzer, args=[True])
+                thread_1.start()
+            except RuntimeError:
+                thread_1 = threading.Thread(target=self.buzzer, args=[True])
+                thread_1.start()
+            try:
+                user_response = self.prompt.User_prompt(
+                    "Are all connectors connected to Testing unit at respective connections?")
+                if user_response:
+                    temp = True
+                    self.state = False
+                else:
+                    temp = False
+                result.append(temp)
+            except Exception as exp:
+                print(exp)
         else:
             pass
 
@@ -635,6 +698,33 @@ class Ui_MainWindow(object):
         self.textBrowser.clear()
         self.lineEdit_ENDTIME.clear()
         self.final_status.setText("")
+        self.setup_status_2.setStyleSheet("QFrame{\n"
+                                          "    border-radius:80px;\n"
+                                          "    border: 2px solid black;background-color: rgb(0, 130, 0);\n"  # rgb(0, 209, 0)
+                                          "}")
+        self.emergency_status.setStyleSheet("QFrame{\n"
+                                          "    border-radius:80px;\n"
+                                          "    border: 2px solid black;background-color: rgb(150, 0, 0);\n"  # rgb(0, 209, 0)
+                                          "}")
+
+
+    def buzzer(self, state):
+        self.state = state
+        for i in range(1, 100):
+            keyboard.press_and_release("volume_up")
+        while self.state:
+            self.emergency_status.setStyleSheet("QFrame{\n"
+                                          "    border-radius:80px;\n"
+                                          "    border: 2px solid black;background-color: rgb(255, 0, 0);\n"  # rgb(0, 209, 0)
+                                          "}")
+            keyboard.press_and_release("volume_up")
+            winsound.Beep(9000, 1000)
+            self.emergency_status.setStyleSheet("QFrame{\n"
+                                          "    border-radius:80px;\n"
+                                          "    border: 2px solid black;background-color: rgb(150, 0, 0);\n"  # rgb(0, 209, 0)
+                                          "}")
+            time.sleep(1)
+
 
     def get_date_time(self, date=0, time=0):
         now = datetime.datetime.now()

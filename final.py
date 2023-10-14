@@ -418,6 +418,7 @@ class Ui_MainWindow(object):
                                           "    border-radius:80px;\n"
                                           "    border: 2px solid black;background-color: rgb(0, 255, 0);\n"  #rgb(0, 209, 0)
                                           "}")
+
             while testing_flag:
                 for i in range(2, 4):
                     final_output = []

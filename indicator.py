@@ -55,7 +55,7 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
-        self.emergency.setText(_translate("Form", "EMERGENCY"))
+        self.emergency.setText(_translate("Form", "EMERGENCY STATUS"))
         self.setup.setText(_translate("Form", "SETUP STATUS"))
 
 

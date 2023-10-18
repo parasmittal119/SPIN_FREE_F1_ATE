@@ -290,39 +290,98 @@ class Ui_MainWindow(object):
 
         '''INDICATION'''
         self.emergency_status = QtWidgets.QFrame(MainWindow)
-        self.emergency_status.setGeometry(QtCore.QRect(100, 750, 161, 161))
+        self.emergency_status.setGeometry(QtCore.QRect(100, 750, 141, 141))
         self.emergency_status.setStyleSheet("QFrame{\n"
                                      "    border-color: rgb(0, 255, 0);\n"
-                                     "    border-radius:80px;\n"
+                                     "    border-radius:70px;\n"
                                      "    background-color: rgb(188, 0, 0);border: 2px solid black\n"     #RGB(255,0,0);
                                      "}")
         self.emergency_status.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.emergency_status.setFrameShadow(QtWidgets.QFrame.Raised)
         self.emergency_status.setObjectName("emergency")
         self.setup_status_2 = QtWidgets.QFrame(MainWindow)
-        self.setup_status_2.setGeometry(QtCore.QRect(320, 750, 161, 161))
+        self.setup_status_2.setGeometry(QtCore.QRect(280, 750, 141, 141))
         self.setup_status_2.setStyleSheet("QFrame{\n"
-                                          "    border-radius:80px;\n"
+                                          "    border-radius:70px;\n"
                                           "    border: 2px solid black;background-color: rgb(0, 130, 0);\n"  #rgb(0, 209, 0)
                                           "}")
         self.setup_status_2.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.setup_status_2.setFrameShadow(QtWidgets.QFrame.Raised)
         self.setup_status_2.setObjectName("setup_status_2")
         self.emergency = QtWidgets.QLabel(MainWindow)
-        self.emergency.setGeometry(QtCore.QRect(100, 950, 151, 31))
+        self.emergency.setGeometry(QtCore.QRect(100, 900, 151, 31))
         font = QtGui.QFont()
         font.setPointSize(16)
         self.emergency.setFont(font)
         self.emergency.setAlignment(QtCore.Qt.AlignCenter)
         self.emergency.setObjectName("emergency")
         self.setup = QtWidgets.QLabel(MainWindow)
-        self.setup.setGeometry(QtCore.QRect(320, 950, 151, 31))
+        self.setup.setGeometry(QtCore.QRect(280, 900, 151, 31))
         font = QtGui.QFont()
         font.setPointSize(16)
         self.setup.setFont(font)
         self.setup.setAlignment(QtCore.Qt.AlignCenter)
         self.setup.setObjectName("setup")
         '''INDICATION'''
+
+        """
+                MARKINGS
+                """
+
+        self.horizontalLayoutWidget = QtWidgets.QWidget(MainWindow)
+        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(65, 940, 400, 81))
+        self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
+        self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.verticalLayout = QtWidgets.QVBoxLayout()
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.pushButton = QtWidgets.QPushButton(self.horizontalLayoutWidget)
+        self.pushButton.setStyleSheet("background-color: rgb(255, 0, 0);")
+        self.pushButton.setText("")
+        self.pushButton.setObjectName("pushButton")
+        self.horizontalLayout.addWidget(self.pushButton)
+        self.pushButton_2 = QtWidgets.QPushButton(self.horizontalLayoutWidget)
+        self.pushButton_2.setStyleSheet("background-color: rgb(0, 255, 0);")
+        self.pushButton_2.setText("")
+        self.pushButton_2.setObjectName("pushButton_2")
+        self.horizontalLayout.addWidget(self.pushButton_2)
+        self.verticalLayout.addLayout(self.horizontalLayout)
+        self.active_label = QtWidgets.QLabel(self.horizontalLayoutWidget)
+        font = QtGui.QFont()
+        font.setPointSize(15)
+        self.active_label.setFont(font)
+        self.active_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.active_label.setObjectName("label")
+        self.verticalLayout.addWidget(self.active_label)
+        self.horizontalLayout_3.addLayout(self.verticalLayout)
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.pushButton_3 = QtWidgets.QPushButton(self.horizontalLayoutWidget)
+        self.pushButton_3.setStyleSheet("background-color: rgb(150, 0, 0);")
+        self.pushButton_3.setText("")
+        self.pushButton_3.setObjectName("pushButton_3")
+        self.horizontalLayout_2.addWidget(self.pushButton_3)
+        self.pushButton_4 = QtWidgets.QPushButton(self.horizontalLayoutWidget)
+        self.pushButton_4.setStyleSheet("background-color: rgb(0, 130, 0);")
+        self.pushButton_4.setText("")
+        self.pushButton_4.setObjectName("pushButton_4")
+        self.horizontalLayout_2.addWidget(self.pushButton_4)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_2)
+        self.label_2 = QtWidgets.QLabel(self.horizontalLayoutWidget)
+        font = QtGui.QFont()
+        font.setPointSize(15)
+        self.label_2.setFont(font)
+        self.label_2.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_2.setObjectName("label_2")
+        self.verticalLayout_2.addWidget(self.label_2)
+        self.horizontalLayout_3.addLayout(self.verticalLayout_2)
+
+        """MARKINGS END"""
 
         self.prompt = Prompt()
         self.channel = 0
@@ -357,6 +416,8 @@ class Ui_MainWindow(object):
         self.final_status.setText(_translate("MainWindow", ""))
         self.emergency.setText(_translate("MainWindow", "EMERGENCY"))
         self.setup.setText(_translate("MainWindow", "SETUP STATUS"))
+        self.active_label.setText(_translate("MainWindow", "ACTIVE STATE"))
+        self.label_2.setText(_translate("MainWindow", "OFF STATE"))
 
     def print_console(self, text="", color="BLUE"):
         if color == "RED":
@@ -415,10 +476,9 @@ class Ui_MainWindow(object):
             self.print_console(f'ASSOCIATE NAME : {self.associate_name}')
             self.lineEdit_STARTTIME.setText(str(self.get_date_time(time=1, date=1)))
             self.setup_status_2.setStyleSheet("QFrame{\n"
-                                          "    border-radius:80px;\n"
+                                          "    border-radius:70px;\n"
                                           "    border: 2px solid black;background-color: rgb(0, 255, 0);\n"  #rgb(0, 209, 0)
                                           "}")
-
             while testing_flag:
                 for i in range(2, 4):
                     final_output = []
@@ -467,11 +527,11 @@ class Ui_MainWindow(object):
 
         self.pushButton_start.setDisabled(False)
         self.setup_status_2.setStyleSheet("QFrame{\n"
-                                          "    border-radius:80px;\n"
+                                          "    border-radius:70px;\n"
                                           "    border: 2px solid black;background-color: rgb(0, 130, 0);\n"  # rgb(0, 209, 0)
                                           "}")
         self.emergency_status.setStyleSheet("QFrame{\n"
-                                          "    border-radius:80px;\n"
+                                          "    border-radius:70px;\n"
                                           "    border: 2px solid black;background-color: rgb(150, 0, 0);\n"  # rgb(0, 209, 0)
                                           "}")
 
@@ -700,11 +760,11 @@ class Ui_MainWindow(object):
         self.lineEdit_ENDTIME.clear()
         self.final_status.setText("")
         self.setup_status_2.setStyleSheet("QFrame{\n"
-                                          "    border-radius:80px;\n"
+                                          "    border-radius:70px;\n"
                                           "    border: 2px solid black;background-color: rgb(0, 130, 0);\n"  # rgb(0, 209, 0)
                                           "}")
         self.emergency_status.setStyleSheet("QFrame{\n"
-                                          "    border-radius:80px;\n"
+                                          "    border-radius:70px;\n"
                                           "    border: 2px solid black;background-color: rgb(150, 0, 0);\n"  # rgb(0, 209, 0)
                                           "}")
 
@@ -715,13 +775,13 @@ class Ui_MainWindow(object):
             keyboard.press_and_release("volume_up")
         while self.state:
             self.emergency_status.setStyleSheet("QFrame{\n"
-                                          "    border-radius:80px;\n"
+                                          "    border-radius:70px;\n"
                                           "    border: 2px solid black;background-color: rgb(255, 0, 0);\n"  # rgb(0, 209, 0)
                                           "}")
             keyboard.press_and_release("volume_up")
-            winsound.Beep(9000, 1000)
+            winsound.Beep(3000, 1000)
             self.emergency_status.setStyleSheet("QFrame{\n"
-                                          "    border-radius:80px;\n"
+                                          "    border-radius:70px;\n"
                                           "    border: 2px solid black;background-color: rgb(150, 0, 0);\n"  # rgb(0, 209, 0)
                                           "}")
             time.sleep(1)

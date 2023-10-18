@@ -2,6 +2,12 @@ import time
 
 import pyvisa
 
+# resource = pyvisa.ResourceManager()
+# list_1 = resource.list_resources()
+# inst = resource.open_resource()
+# inst = resource.open_resource("GPIB0::14")
+# print(inst.query("*IDN?"))
+
 
 class DMM_READ:
     def __init__(self):

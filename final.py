@@ -390,6 +390,12 @@ class Ui_MainWindow(object):
         self.contacts = PFC_control_done
         self.dmm = DMM_READ.DMM_READ()
         self.cro = DMM_READ.CRO()
+        try:
+            thread_1 = threading.Thread(target=self.buzzer, args=[self.pfc.read_pfc()])
+            thread_1.start()
+        except RuntimeError:
+            thread_1 = threading.Thread(target=self.buzzer, args=[True])
+            thread_1.start()
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -714,12 +720,6 @@ class Ui_MainWindow(object):
         self.output.setStyleSheet("background-color:rgb(0,128,255)")
         if self.is_topcard:
             try:
-                thread_1 = threading.Thread(target=self.buzzer, args=[True])
-                thread_1.start()
-            except RuntimeError:
-                thread_1 = threading.Thread(target=self.buzzer, args=[True])
-                thread_1.start()
-            try:
                 user_response = self.prompt.User_prompt(
                     "Are all connectors connected to Testing unit at respective connections?")
                 if user_response:
@@ -773,18 +773,40 @@ class Ui_MainWindow(object):
         self.state = state
         for i in range(1, 100):
             keyboard.press_and_release("volume_up")
-        while self.state:
-            self.emergency_status.setStyleSheet("QFrame{\n"
-                                          "    border-radius:70px;\n"
-                                          "    border: 2px solid black;background-color: rgb(255, 0, 0);\n"  # rgb(0, 209, 0)
-                                          "}")
-            keyboard.press_and_release("volume_up")
-            winsound.Beep(3000, 1000)
-            self.emergency_status.setStyleSheet("QFrame{\n"
-                                          "    border-radius:70px;\n"
-                                          "    border: 2px solid black;background-color: rgb(150, 0, 0);\n"  # rgb(0, 209, 0)
-                                          "}")
-            time.sleep(1)
+        while True:
+            self.state = self.pfc.read_pfc()
+            print(self.state)
+            if self.state == 1:
+                self.setup_status_2.setStyleSheet("QFrame{\n"
+                                                  "    border-radius:70px;\n"
+                                                  "    border: 2px solid black;background-color: rgb(0, 130, 0);\n"  # rgb(0, 209, 0)
+                                                  "}")
+            elif self.state == 2:
+                self.emergency_status.setStyleSheet("QFrame{\n"
+                                                  "    border-radius:70px;\n"
+                                                  "    border: 2px solid black;background-color: rgb(150, 0, 0);\n"  # rgb(0, 209, 0)
+                                                  "}")
+            while self.state == 1:
+                self.emergency_status.setStyleSheet("QFrame{\n"
+                                              "    border-radius:70px;\n"
+                                              "    border: 2px solid black;background-color: rgb(255, 0, 0);\n"  # rgb(0, 209, 0)
+                                              "}")
+                keyboard.press_and_release("volume_up")
+                winsound.Beep(3000, 1000)
+                self.emergency_status.setStyleSheet("QFrame{\n"
+                                              "    border-radius:70px;\n"
+                                              "    border: 2px solid black;background-color: rgb(150, 0, 0);\n"  # rgb(0, 209, 0)
+                                              "}")
+                time.sleep(1)
+                self.state = self.pfc.read_pfc()
+
+            while self.state == 2:
+                self.setup_status_2.setStyleSheet("QFrame{\n"
+                                              "    border-radius:70px;\n"
+                                              "    border: 2px solid black;background-color: rgb(0, 255, 0);\n"  # rgb(0, 209, 0)
+                                              "}")
+                self.state = self.pfc.read_pfc()
+
 
 
     def get_date_time(self, date=0, time=0):
